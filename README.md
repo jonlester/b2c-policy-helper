@@ -10,11 +10,12 @@ Azure AD B2C custom policy tools and scripts
 
 ## 2. Installation process
 For now:
-- `git clone`
-- Open a VS-Code terminal window, and change to the `/scripts` folder.  Then run `npm install`.
+- `git clone https://github.com/jonlester/b2c-policy-helper.git`
+- Open the cloned repo in Visual Studio Code
+- Open a VS-Code terminal window and run `npm install`.
 
 ## 3. Usage
-Using the built-in VS Code terminal, run the following command:
+Using the VS Code terminal, run the following command:
 
 `npm run export`
 
