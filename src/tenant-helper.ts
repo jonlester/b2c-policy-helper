@@ -9,55 +9,56 @@ import { Endpoints } from "./constants";
  * not public.
  */
 export class B2CTenantHelper {
-    private _credential: AzureCredential;
+  private _credential: AzureCredential;
 
-    constructor(credential: AzureCredential) {
-        this._credential = credential;
+  constructor(credential: AzureCredential) {
+    this._credential = credential;
+  }
+  async getB2CTenants(): Promise<B2CTenant[]> {
+    const client = new SubscriptionClient(this._credential);
+    const tenants = new Array<B2CTenant>();
+    for await (const item of client.tenants.list()) {
+      if (item.tenantType === "AAD B2C") {
+        tenants.push({ ...item, ...{ isB2C: true } });
+      }
     }
-    async getB2CTenants(): Promise<B2CTenant[]> {
-        const client = new SubscriptionClient(this._credential);
-        const tenants = new Array<B2CTenant>();
-        for await (let item of client.tenants.list()) {
-            if (item.tenantType === "AAD B2C") {
-                tenants.push({ ...item, ...{ isB2C: true } });
-            }
-        }
-        return Promise.resolve(tenants);
-    }
+    return Promise.resolve(tenants);
+  }
 
-    async downloadUserFlow(tenantDomain: string, policyId: string): Promise<string> {
+  async downloadUserFlow(tenantDomain: string, policyId: string): Promise<string> {
+    const headers = await this.defaultHeaders();
+    headers.append("Accept", "text/xml");
 
-        const headers = await this.defaultHeaders()
-        headers.append('Accept', 'text/xml');
+    console.log("Attempting to download policy set from B2C Admin controller...");
+    return fetch(
+      `${Endpoints.B2CAdminEndpointDefault}/trustframework/GetAsXml?sendAsAttachment=true&tenantId=${tenantDomain}&policyId=${policyId}&getBasePolicies=true`,
+      {
+        method: "GET",
+        headers: headers,
+      },
+    ).then((response) => {
+      return response.text();
+    });
+  }
 
-        console.log('Attempting to download policy set from B2C Admin controller...');
-        return fetch(`${Endpoints.B2CAdminEndpointDefault}/trustframework/GetAsXml?sendAsAttachment=true&tenantId=${tenantDomain}&policyId=${policyId}&getBasePolicies=true`, {
-            method: 'GET',
-            headers: headers
-        }).then((response) => {
-            return response.text();
-        });
-    }
+  async listUserFlows(tenantDomain: string): Promise<any> {
+    const headers = await this.defaultHeaders();
+    headers.append("Accept", "application/json");
 
-    async listUserFlows(tenantDomain: string): Promise<any> {
+    return fetch(`${Endpoints.B2CAdminEndpointDefault}/adminuserjourneys?tenantId=${tenantDomain}`, {
+      method: "GET",
+      headers: headers,
+    }).then((response) => {
+      return response.json();
+    });
+  }
 
-        const headers = await this.defaultHeaders()
-        headers.append('Accept', 'application/json');
-
-        return fetch(`${Endpoints.B2CAdminEndpointDefault}/adminuserjourneys?tenantId=${tenantDomain}`, {
-            method: 'GET',
-            headers: headers
-        }).then((response) => {
-            return response.json();
-        });
-    }
-
-    private async defaultHeaders() : Promise<Headers> {
-        const headers = new Headers();
-        headers.append('Authorization', await this._credential.getManagementBearerToken());
-        headers.append('Accept-Encoding', 'gzip, deflate, br');
-        return headers;
-    }
+  private async defaultHeaders(): Promise<Headers> {
+    const headers = new Headers();
+    headers.append("Authorization", await this._credential.getManagementBearerToken());
+    headers.append("Accept-Encoding", "gzip, deflate, br");
+    return headers;
+  }
 }
 
 export type B2CTenant = TenantIdDescription & { isB2C: boolean };

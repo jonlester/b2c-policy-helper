@@ -363,3 +363,4 @@ FodyWeavers.xsd
 /scripts/test/build
 /test/compact
 /exported-userflows
+/tests/test-files/policyset.converted.xml
