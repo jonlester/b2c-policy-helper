@@ -14,5 +14,10 @@ For now:
 - Open a VS-Code terminal window, and change to the `/scripts` folder.  Then run `npm install`.
 
 ## 3. Usage
-- See [the Scripts/API docs](./scripts/docs/README.md)
+Using the built-in VS Code terminal, run the following command:
+
+`npm run export`
+
+A web browser will open to allow you authenticate.  Once that completes, follow the prompts in the terminal window to select the B2C Tenant and Policy to export.
+
 
