@@ -54,6 +54,9 @@ export function convertExportedUserFlowPolicySet(policySetDom: Document, tokeniz
       //update the base policy reference to ensure tenant and valid policy name
       updateBasePolicyReference(policy, homeTenantOrToken);
 
+      //TODO: consider moving to the "prepare for deployment" script
+      //there's not much point in managing the file size here 
+      //since the policy may be edited before deployment
       let policyPartsCount = 0;
       while (!isLessThanMaxSize(policy)) {
         if (policyPartsCount === 0)
