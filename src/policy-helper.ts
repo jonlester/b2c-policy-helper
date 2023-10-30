@@ -17,6 +17,12 @@ export function convertExportedUserFlowPolicySet(policySetDom: Document, tokeniz
     throw new Error("No policies found in the policy set");
   }
 
+  //TODO: logic to tokenize additional tenant-specifc values
+  // and id that isn't recognized as first party would need to have the moniker generatoed
+  //and added to the manifest.
+  // Cryptographic keys
+  // federation Technical profile client_id, ClientId, ApplicationObjectId
+  // remove tenant object id attribute from policy
   let homeTenantOrToken = policies[0].getAttribute("TenantId") as string;
 
   if (!homeTenantOrToken && !tokenizeTenant) {

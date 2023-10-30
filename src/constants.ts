@@ -49,6 +49,17 @@ export const DefaultCustomPolicyValues = {
 };
 
 //this should be all of the object references that we have to track
+
+/* TODO:
+*  new to add displaycontrol refs
+            <DisplayClaims>
+              <DisplayClaim DisplayControlReferenceId="emailVerificationControl"/>
+            </DisplayClaims>
+
+             <DisplayControl Id="emailVerificationControl" UserInterfaceControlType="VerificationControl">
+            DisplayControl can referenece claims and other display controls
+*
+*/
 export const referenceXPaths = [
   {
     refPath: "@ReferenceId",
@@ -77,7 +88,7 @@ export const referenceXPaths = [
   },
   {
     refPath: "@ClaimTypeReferenceId",
-    refs: [{ objPath: "ClaimType", fromPath: ["InputClaim", "OutputClaim", "PersistedClaim"] }],
+    refs: [{ objPath: "ClaimType", fromPath: ["InputClaim", "OutputClaim", "PersistedClaim", "DisplayClaim"] }],
   },
   {
     refPath: "text()", //Elemenent text
